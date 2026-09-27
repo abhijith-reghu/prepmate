@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - PrepMate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ===== HEADER (same as homepage and login page) ===== -->
+    <header>
+        <div class="brand-block">
+            <div class="logo">P</div>
+            <div>
+                <div class="brand-name">PrepMate</div>
+                <div class="brand-sub">AI Placement Preparation</div>
+            </div>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+            </ul>
+        </nav>
+        <div class="nav-actions">
+            <a href="login.html" class="btn btn-ghost">Login</a>
+        </div>
+    </header>
+
+    <!-- ===== SIGN UP FORM SECTION ===== -->
+    <div class="auth-wrap">
+        <div class="auth-card">
+
+            <h2>Create your account</h2>
+            <p class="sub">Start preparing for placements today — it's free</p>
+
+            <!-- Error message box, hidden until needed -->
+            <div class="error-msg" id="error-msg">Please fill in all required fields.</div>
+
+            <form id="register-form">
+                <div class="field">
+                    <label for="fullname">Full Name</label>
+                    <input type="text" id="fullname" placeholder="Your name" required>
+                </div>
+
+                <div class="field">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="you@example.com" required>
+                </div>
+
+                <div class="field">
+                    <label for="college">College / University (optional)</label>
+                    <input type="text" id="college" placeholder="Leave blank if not applicable">
+                </div>
+
+                <div class="field">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Create a password" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block btn-lg">Create Account</button>
+            </form>
+
+            <p class="auth-alt">Already have an account? <a href="login.html">Log in</a></p>
+
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('register-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const errorBox = document.getElementById('error-msg');
+            const fullname = document.getElementById('fullname').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const college = document.getElementById('college').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            if (!fullname || !email || !password) {
+                errorBox.textContent = 'Please fill in all required fields.';
+                errorBox.style.display = 'block';
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ fullname, email, college, password })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    window.location.href = 'student-dashboard.html';
+                } else {
+                    errorBox.textContent = data.message || 'Registration failed.';
+                    errorBox.style.display = 'block';
+                }
+            } catch (err) {
+                errorBox.textContent = 'Could not reach the server. Is Flask running?';
+                errorBox.style.display = 'block';
+            }
+        });
+    </script>
+
+</body>
+</html>

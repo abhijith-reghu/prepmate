@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - PrepMate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ===== HEADER (same as homepage) ===== -->
+    <header>
+        <div class="brand-block">
+            <div class="logo">P</div>
+            <div>
+                <div class="brand-name">PrepMate</div>
+                <div class="brand-sub">AI Placement Preparation</div>
+            </div>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+            </ul>
+        </nav>
+        <div class="nav-actions">
+            <a href="register.html" class="btn btn-primary">Sign Up</a>
+        </div>
+    </header>
+
+    <!-- ===== LOGIN FORM SECTION ===== -->
+    <div class="auth-wrap">
+        <div class="auth-card">
+
+            <h2>Welcome back</h2>
+            <p class="sub">Log in to continue your placement prep</p>
+
+            <!-- Tabs to choose Student or Admin -->
+            <div class="tabs">
+                <div class="tab active" id="tab-student">Student</div>
+                <div class="tab" id="tab-admin">Admin</div>
+            </div>
+
+            <!-- Error message box, hidden until needed -->
+            <div class="error-msg" id="error-msg">Please fill in both fields.</div>
+
+            <form id="login-form">
+                <input type="hidden" id="role" value="student">
+                <div class="field">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="you@example.com" required>
+                </div>
+
+                <div class="field">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block btn-lg">Log In</button>
+            </form>
+
+            <p class="auth-alt">Don't have an account? <a href="register.html">Sign up</a></p>
+
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Tab switching: sets the hidden "role" field to student or admin
+        const tabStudent = document.getElementById('tab-student');
+        const tabAdmin = document.getElementById('tab-admin');
+        const roleField = document.getElementById('role');
+
+        tabStudent.addEventListener('click', () => {
+            tabStudent.classList.add('active');
+            tabAdmin.classList.remove('active');
+            roleField.value = 'student';
+        });
+        tabAdmin.addEventListener('click', () => {
+            tabAdmin.classList.add('active');
+            tabStudent.classList.remove('active');
+            roleField.value = 'admin';
+        });
+
+        // Form submission: sends data to Flask backend
+        document.getElementById('login-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const errorBox = document.getElementById('error-msg');
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const role = roleField.value;
+
+            if (!email || !password) {
+                errorBox.textContent = 'Please fill in both fields.';
+                errorBox.style.display = 'block';
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password, role })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    window.location.href = role === 'admin' ? 'admin-dashboard.html' : 'student-dashboard.html';
+                } else {
+                    errorBox.textContent = data.message || 'Login failed. Check your details.';
+                    errorBox.style.display = 'block';
+                }
+            } catch (err) {
+                errorBox.textContent = 'Could not reach the server. Is Flask running?';
+                errorBox.style.display = 'block';
+            }
+        });
+    </script>
+
+</body>
+</html>
