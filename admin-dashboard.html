@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard - PrepMate</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <div class="brand-block">
+        <div class="logo">P</div>
+        <div><div class="brand-name">PrepMate</div><div class="brand-sub">Admin Panel</div></div>
+    </div>
+    <nav><ul><li><a href="index.html">Home</a></li></ul></nav>
+    <div class="nav-actions">
+        <span id="greeting" style="font-size:14px; font-weight:600; color:var(--ink-600);">Loading...</span>
+        <a href="#" id="logout-link" class="btn btn-ghost">Log Out</a>
+    </div>
+</header>
+
+<div class="dash-layout">
+    <div class="sidebar">
+        <a href="admin-dashboard.html" class="active">📊 Overview</a>
+        <a href="#">🧑‍🎓 Students</a>
+        <a href="#">📋 Manage Tests</a>
+        <a href="#">📈 Reports</a>
+    </div>
+
+    <div class="main">
+        <h1>Admin Overview</h1>
+        <p class="sub">Platform activity at a glance</p>
+
+        <div class="grid-3" style="margin-bottom:24px;">
+            <div class="card stat-mini"><b id="stat-students">0</b><span>Total Students</span></div>
+            <div class="card stat-mini"><b id="stat-tests">0</b><span>Tests Taken (All)</span></div>
+            <div class="card stat-mini"><b id="stat-avg">0%</b><span>Platform Average Score</span></div>
+        </div>
+
+        <div class="card">
+            <h3 style="font-size:15px; margin-bottom:14px;">Registered Students</h3>
+            <table id="student-table">
+                <tr><th>Name</th><th>Email</th><th>College</th><th>Tests Taken</th><th>Avg Score</th></tr>
+                <tr><td colspan="5" style="text-align:center; color:var(--ink-600);">Loading...</td></tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function loadAdminDashboard() {
+        try {
+            const meRes = await fetch('/api/me');
+            const me = await meRes.json();
+
+            if (!me.logged_in || me.role !== 'admin') {
+                window.location.href = 'login.html';
+                return;
+            }
+            document.getElementById('greeting').textContent = 'Hi, ' + me.name;
+
+            const res = await fetch('/api/admin/students');
+            const data = await res.json();
+
+            document.getElementById('stat-students').textContent = data.total_students;
+            document.getElementById('stat-tests').textContent = data.total_tests;
+            document.getElementById('stat-avg').textContent = data.platform_average + '%';
+
+            const table = document.getElementById('student-table');
+            table.innerHTML = '<tr><th>Name</th><th>Email</th><th>College</th><th>Tests Taken</th><th>Avg Score</th></tr>';
+
+            if (data.students.length === 0) {
+                table.innerHTML += '<tr><td colspan="5" style="text-align:center;">No students registered yet.</td></tr>';
+            } else {
+                data.students.forEach(s => {
+                    table.innerHTML += `<tr>
+                        <td>${s.name}</td>
+                        <td>${s.email}</td>
+                        <td>${s.college || '-'}</td>
+                        <td>${s.tests_taken}</td>
+                        <td>${s.avg_score}%</td>
+                    </tr>`;
+                });
+            }
+        } catch (err) {
+            console.error('Could not load admin dashboard', err);
+        }
+    }
+
+    document.getElementById('logout-link').addEventListener('click', async (e) => {
+        e.preventDefault();
+        await fetch('/api/logout', { method: 'POST' });
+        window.location.href = 'index.html';
+    });
+
+    loadAdminDashboard();
+</script>
+
+</body>
+</html>
