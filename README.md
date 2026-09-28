@@ -102,7 +102,7 @@ Go to: **http://127.0.0.1:5000**
 
 **Default Admin Account:**
 - Email: `admin@prepmate.com`
-- Password: `admin123`
+- Password: `********`
 
 **Student Account:**
 - Use the Sign Up page to create your own — it saves to the real database now.
