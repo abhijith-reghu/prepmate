@@ -13,6 +13,10 @@ BEFORE RUNNING THIS FILE:
   3. Install requirements:  pip install flask mysql-connector-python werkzeug
 
 TO RUN:
+  IMPORTANT: Open your terminal INSIDE the backend/ folder first (cd backend),
+  because this file finds the frontend using a relative path ('../frontend').
+  Running it from anywhere else will break the file paths.
+
   python app.py
   Then open http://127.0.0.1:5000 in your browser
 """
@@ -22,7 +26,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import mysql.connector
 import os
 
-app = Flask(__name__, static_folder='.', static_url_path='')
+app = Flask(__name__, static_folder='../frontend', static_url_path='')
 app.secret_key = 'prepmate-secret-key-change-this-later'  # needed for login sessions
 
 # ---------- DATABASE CONNECTION SETTINGS ----------
@@ -31,8 +35,8 @@ app.secret_key = 'prepmate-secret-key-change-this-later'  # needed for login ses
 DB_CONFIG = {
     'host': 'localhost',
     'user': 'root',
-    'password': '',
-    'database': 'prepmate_db'
+    'password': 'abhi916',
+    'database': 'prepmate_db'a
 }
 
 
@@ -119,7 +123,7 @@ def setup_database():
 # ---------- SERVE FRONTEND PAGES ----------
 @app.route('/')
 def home():
-    return send_from_directory('.', 'index.html')
+    return send_from_directory('../frontend', 'index.html')
 
 
 # Flask's static_folder already serves .html, .css, .js files directly,

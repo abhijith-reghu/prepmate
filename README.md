@@ -1,4 +1,33 @@
-# PrepMate — Setup Instructions
+# PrepMate — AI Placement Preparation Platform
+
+A full-stack web platform that helps college students prepare for campus placements — aptitude and technical MCQ tests, a unique **confidence-rating** feature, and live performance dashboards for both students and admins.
+
+Built as a BCA final-year project using **Flask, MySQL, HTML, CSS, and JavaScript.**
+
+## ✨ Key Features
+
+- 🔐 **Student & Admin Authentication** — separate login flows, hashed passwords
+- 📋 **Aptitude & Technical MCQ Tests** — categorized question bank
+- ⭐ **Confidence Rating (flagship feature)** — students rate their confidence after each answer, revealing overconfidence vs. genuine knowledge gaps — a feature not found in existing placement-prep platforms
+- 📊 **Student Dashboard** — real-time score history and average confidence, pulled live from the database
+- 🧑‍💼 **Admin Dashboard** — view all registered students and their performance stats
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | HTML, CSS, JavaScript |
+| Backend | Python (Flask) |
+| Database | MySQL |
+| Local Server | XAMPP |
+
+## 🚧 Project Status
+
+This is an active academic project. Core auth, testing, and dashboard features are fully functional with a real database. Coding Practice, AI Interview Practice, and Resume Analyzer are planned as future scope.
+
+---
+
+# Setup Instructions
 
 ## Files in this project
 
@@ -12,10 +41,28 @@
 - seed_questions.py — Loads the 20 starter questions into the database
 - requirements.txt — Python packages needed
 
+## Folder Structure
+
+```
+PrepMate-Project/
+├── frontend/
+│   ├── index.html, login.html, register.html
+│   ├── student-dashboard.html, admin-dashboard.html, aptitude.html
+│   ├── style.css, script.js
+├── backend/
+│   ├── app.py
+│   ├── schema.sql
+│   ├── seed_questions.py
+│   └── requirements.txt
+├── question-bank.md
+├── README.md
+└── .gitignore
+```
+
 ## First-Time Setup (do this once)
 
 **1. Install Python packages**
-Open a terminal in this folder and run:
+Open a terminal **inside the `backend/` folder** and run:
 ```
 pip install -r requirements.txt
 ```
@@ -31,6 +78,7 @@ pip install -r requirements.txt
 - Click **Create**
 
 **4. Start the Flask server**
+Make sure your terminal is still inside the `backend/` folder, then run:
 ```
 python app.py
 ```
@@ -42,7 +90,7 @@ Done. Starting Flask server at http://127.0.0.1:5000
 This step automatically creates all your tables (students, admins, questions, scores, answer_log) and a default admin account.
 
 **5. Load the starter questions (only once)**
-Open a NEW terminal (keep app.py running in the first one) and run:
+Open a NEW terminal, navigate into the `backend/` folder again (keep app.py running in the first terminal), and run:
 ```
 python seed_questions.py
 ```
